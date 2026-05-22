@@ -1,0 +1,15 @@
+# Node / VitePress
+node_modules/
+docs/.vitepress/cache/
+docs/.vitepress/dist/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.uv/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
