@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "proj v1",
+  "description": "v1: proj:transform coefficients are anchored at the upper-left PIXEL CENTER.",
+  "type": "object",
+  "required": ["proj:code", "proj:transform"],
+  "properties": {
+    "proj:code": { "type": "string" },
+    "proj:transform": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 6,
+      "maxItems": 6
+    }
+  },
+  "additionalProperties": true
+}

@@ -11,7 +11,7 @@ This document does not add requirements beyond those in the [normative Zarr Conv
 
 ## Why this exists
 
-The normative spec tells convention *authors* how to version their conventions but says nothing about what *implementations* should do when they encounter one. As long as that gap is unspecified, every library invents its own rule, and the catalogued evidence shows that real specs left in this state (GeoParquet, CF Conventions) end up with libraries that disagree on what a recognized or unrecognized version means.
+The normative spec tells convention *authors* how to version their conventions but says nothing about what *implementations* should do when they encounter one. As long as that gap is unspecified, every library invents its own rule, and the [survey](/posts/2026-survey) of six conventions shows enough silent-misinterpretation risk in real spec histories that the gap is worth closing with concrete guidance.
 
 This page names contracts that have proven to work in practice across the JSON-metadata ecosystem. It is opinionated guidance, not RFC2119 requirements. The community can pick items off this menu, ignore them, or push to promote them into the normative spec once consensus forms.
 
@@ -39,8 +39,10 @@ The five contracts below are ordered taxonomically by increasing version-system 
 
 **Precedents.** Dublin Core (15 elements, stable since 1995). TopoJSON (effectively frozen since 2014). GeoJSON RFC 7946 tried this and the covenant broke when `crs` was removed in 2016, see evidence below.
 
-::: details Evidence from prior cataloging work
-The GeoJSON 2008 to RFC 7946 (2016) transition is the canonical no-version-covenant failure. RFC 7946 removed the `crs` member without providing migration guidance; a 2008 document with `"crs": "urn:ogc:def:crs:EPSG::3857"` is structurally indistinguishable from a 2016 document apart from the extra member, and a reader that silently ignores `crs` produces wrong coordinates. This is a real-world `semantic-only` failure (per the classification used in prior cataloging) of the additive-covenant approach. Beyond GeoJSON, prior cataloging found 8 catalogued changes across other specs that would have produced silent misinterpretation under a no-version contract.
+::: details Evidence
+Source: [2026 spec-evolution survey](/posts/2026-survey).
+
+The GeoJSON 2008 to RFC 7946 (2016) transition is the canonical no-version-covenant failure. RFC 7946 removed the `crs` member without providing migration guidance; a 2008 document with `"crs": "urn:ogc:def:crs:EPSG::3857"` is structurally indistinguishable from a 2016 document apart from the extra member, and a reader that silently ignores `crs` produces wrong coordinates. This is a real-world `semantic-only` failure (per the classification in the [survey](/posts/2026-survey)) of the additive-covenant approach. Beyond GeoJSON, the survey found 8 catalogued changes across other specs that would have produced silent misinterpretation under a no-version contract.
 :::
 
 **Example.** A minimal `zarr_conventions` entry with just UUID and `spec_url`, and no version key in attributes:
@@ -75,8 +77,10 @@ The GeoJSON 2008 to RFC 7946 (2016) transition is the canonical no-version-coven
 
 **Precedents.** GeoTIFF GeoKeys (recognized by tag presence). PROJ WKT autodetection. Apache Parquet's footer.
 
-::: details Evidence from prior cataloging work
-This is the C1 position from zarr-conventions-spec issue #7 ("JSON structure plus fail-on-unknown is sufficient, versions are redundant"). Prior cataloging found 8 of approximately 46 catalogued changes across 6 specs are `semantic-only` or `add-with-semantic-shift`. The sharpest case is a multiscales-adjacent spec where the affine-transform formula notation was clarified from `(i, j)` to `(col_index, row_index)`: no JSON change at all, but the conventional array-programming reading of `(i, j)` is `(row, col)`, opposite of the spec's intent. A structural-inspection reader of pre-clarification data silently produces transposed coordinates. Another case: STAC clarified that field-absent is not equivalent to field-set-to-null; implementations that conflated the two diverged silently. Structural inspection alone cannot help with either.
+::: details Evidence
+Source: [2026 spec-evolution survey](/posts/2026-survey).
+
+This is the position, surfaced in zarr-conventions-spec issue #7, that "JSON structure plus fail-on-unknown is sufficient, versions are redundant." The [survey](/posts/2026-survey) found 8 of approximately 46 catalogued changes across 6 specs are `semantic-only` or `add-with-semantic-shift`. The sharpest case is a multiscales-adjacent spec where the affine-transform formula notation was clarified from `(i, j)` to `(col_index, row_index)`: no JSON change at all, but the conventional array-programming reading of `(i, j)` is `(row, col)`, opposite of the spec's intent. A structural-inspection reader of pre-clarification data silently produces transposed coordinates. Another case: STAC clarified that field-absent is not equivalent to field-set-to-null; implementations that conflated the two diverged silently. Structural inspection alone cannot help with either.
 :::
 
 **Example.** The JSON looks the same as it does for [Stable additive covenant](#_1-stable-additive-covenant), and that is the point of the contract: there is no version field to look at, no schema URL to dispatch on. The convention is recognized by the structural signature (here, the presence of the `proj:` prefix and the shape of `proj:code`):
@@ -111,7 +115,9 @@ This is the C1 position from zarr-conventions-spec issue #7 ("JSON structure plu
 
 **Precedents.** JSON Schema `$schema`. JSON-LD `@context`. Frictionless Data Package `profile`. schema.org context URL.
 
-::: details Evidence from prior cataloging work
+::: details Evidence
+Source: [2026 spec-evolution survey](/posts/2026-survey) (precedents from the broader JSON-metadata ecosystem; this contract is not represented in the catalogued Zarr-adjacent specs).
+
 URI dispatch is the closest implementation of clean "fail-on-unknown" in the broader JSON-metadata ecosystem. JSON Schema dialect URIs (`draft-07`, `2019-09`, `2020-12`) are dispatched on directly by validators; unrecognized URIs cause fail-fast. Frictionless `profile` is consumed by readers that resolve-and-validate, with explicit divergence for unrecognized URLs. The pattern requires URL stability; the conventions framework's UUID provides a fallback identity if the URL eventually moves, but the URL is still the semantics-carrier under this contract.
 :::
 
@@ -144,12 +150,14 @@ URI dispatch is the closest implementation of clean "fail-on-unknown" in the bro
 
 **Reader does.** Parse the integer major from `schema_url` or the in-attributes version key. Recognized major, process, tolerating additive changes within the major per the safely-ignorable principle. Unrecognized major, fail or warn.
 
-**Fit.** Good for conventions willing to accept that minor evolution equals breaking change (no `loosen`-only or `clarify`-only intermediate states; if you change at all, it is a new major or a no-op). Matches the C4 "only MAJOR is useful in practice" position from the issue thread, which the catalog partially supports. Bad if the author needs to ship clarifications or restrictions that the strict-semver community would call minor, and bad for semantic-only changes within a major, since those are invisible to an integer-major reader.
+**Fit.** Good for conventions willing to accept that minor evolution equals breaking change (no `loosen`-only or `clarify`-only intermediate states; if you change at all, it is a new major or a no-op). Matches the "only MAJOR is useful in practice" position, which the catalog partially supports. Bad if the author needs to ship clarifications or restrictions that the strict-semver community would call minor, and bad for semantic-only changes within a major, since those are invisible to an integer-major reader.
 
-**Precedents.** CloudEvents `specversion` (string version, used as major). The raster convention (v1.0 to v1.1 to v2.0 with no patches). GeoParquet `version` (semver string but used loosely).
+**Precedents.** CloudEvents `specversion` (string version, used as major). The raster convention (v1.0 to v1.1 to v2.0 with no patches). GeoParquet `version` (semver string but used loosely). The [Cargo / Rust-style pre-1.0 variant](/walkthroughs/04-integer-major-pass-through#addendum-the-cargo-rust-style-pre-1-0-variant), where `0.x` minor bumps are treated as breaking and `1.0+` minor bumps are additive, fits young specs like NGFF that need an iteration phase before committing to a stable major boundary.
 
-::: details Evidence from prior cataloging work
-Of the catalogued specs, raster went v1.0 to v1.1 to v2.0 with no patch releases; stac-spec went 1.0.0 to 1.1.0 with no patches; multiscales, spatial, and proj are pre-release and have not exercised the patch slot. The empirical pattern is consistent with "patch is unused": the patch slot is never load-bearing in this corpus. C4's "MAJOR-only is workable" instinct is consistent with the data. Still vulnerable to semantic-only changes within a major: the prior cataloging includes cases where a `proj:transform` interpretation was tightened without a JSON shape change, which an integer-major reader cannot detect.
+::: details Evidence
+Source: [2026 spec-evolution survey](/posts/2026-survey).
+
+Of the catalogued specs, raster went v1.0 to v1.1 to v2.0 with no patch releases; stac-spec went 1.0.0 to 1.1.0 with no patches; multiscales, spatial, and proj are pre-release and have not exercised the patch slot. The empirical pattern is consistent with "patch is unused": the patch slot is never load-bearing in this corpus. The "MAJOR-only is workable" instinct is consistent with the data. Still vulnerable to semantic-only changes within a major: the survey includes cases like [Proj PR#14](https://github.com/zarr-conventions/proj/pull/14), where a `proj:transform` interpretation was tightened without a JSON shape change, which an integer-major reader cannot detect.
 :::
 
 **Example.** Convention metadata with `schema_url` ending in `/v2/schema.json` and a `proj:version: 2` attribute; reader checks the major before processing:
@@ -186,7 +194,9 @@ Of the catalogued specs, raster went v1.0 to v1.1 to v2.0 with no patch releases
 
 **Precedents.** STAC plus pystac (the catalogued reference case). OpenAPI 3.0 vs 3.1 (where the version split caused a known tooling divide).
 
-::: details Evidence from prior cataloging work
+::: details Evidence
+Source: [2026 spec-evolution survey](/posts/2026-survey).
+
 stac-spec's catalogued 1.0.0 to 1.1.0 was promoted as a minor but included three `tighten` rows that produced documents invalid against v1.0 schemas. Semver-in-theory would call those breaking. Semver-as-actually-practiced by STAC's maintainers treats minor as "medium-sized change including some incompatibilities," which the migrators absorb. So adopting this contract means committing to writing migrators, not assuming pure semver discipline will hold. Also catalogued: of approximately 46 changes across 6 specs, 19 are `add-optional` (safely additive, deserve minor under semver) and 14 are `loosen` (also additive). Combined, those represent the volume of evolution that semver minor is good for.
 :::
 

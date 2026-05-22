@@ -1,0 +1,11 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "proj v2",
+  "type": "object",
+  "required": ["proj:code"],
+  "properties": {
+    "proj:code": { "type": "string" },
+    "proj:description": { "type": "string" }
+  },
+  "additionalProperties": true
+}

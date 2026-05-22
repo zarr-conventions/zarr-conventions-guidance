@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "proj v2",
+  "description": "v2: proj:cell_alignment is optional. Absent or 'center' anchors proj:transform at the pixel center; 'corner' anchors it at the upper-left corner.",
+  "type": "object",
+  "required": ["proj:code", "proj:transform"],
+  "properties": {
+    "proj:code": { "type": "string" },
+    "proj:transform": {
+      "type": "array",
+      "items": { "type": "number" },
+      "minItems": 6,
+      "maxItems": 6
+    },
+    "proj:cell_alignment": {
+      "type": "string",
+      "enum": ["center", "corner"],
+      "default": "center"
+    }
+  },
+  "additionalProperties": true
+}

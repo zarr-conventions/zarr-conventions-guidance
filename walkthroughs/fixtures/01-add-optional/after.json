@@ -1,0 +1,17 @@
+{
+  "zarr_format": 3,
+  "node_type": "array",
+  "attributes": {
+    "zarr_conventions": [
+      {
+        "uuid": "f17cb550-5864-4468-aeb7-f3180cfb622f",
+        "schema_url": "https://example.com/proj/v2/schema.json",
+        "spec_url": "https://example.com/proj/v2/README.md",
+        "name": "proj:",
+        "description": "Coordinate reference system information for geospatial data."
+      }
+    ],
+    "proj:code": "EPSG:4326",
+    "proj:description": "WGS 84 geographic CRS"
+  }
+}
