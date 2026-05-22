@@ -33,9 +33,10 @@ jobs:
         with:
           path: docs/.vitepress/dist
   deploy:
-    pages: write
-    id-token: write
-    needs: build
+    permissions:
+      pages: write
+      id-token: write
+      needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
