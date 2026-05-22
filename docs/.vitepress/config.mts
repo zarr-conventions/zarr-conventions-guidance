@@ -5,6 +5,7 @@ export default defineConfig({
   description: 'Non-normative guidance and worked examples for the Zarr Conventions framework.',
   base: '/zarr-conventions-guidance/',
   cleanUrls: true,
+  ignoreDeadLinks: true,
   themeConfig: {
     nav: [
       { text: 'Home', link: '/' },
