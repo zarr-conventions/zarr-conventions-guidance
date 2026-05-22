@@ -184,9 +184,9 @@ Of the catalogued specs, raster went v1.0 to v1.1 to v2.0 with no patch releases
 
 ### 5. Semver with declared migrators
 
-**Summary.** Full MAJOR.MINOR.PATCH. The convention's spec ships explicit migration rules from prior minors and an Arrow-style compatibility-range promise. Readers may migrate in memory.
+**Summary.** Full MAJOR.MINOR.PATCH. The convention or a designated reference library ships explicit migration rules from prior minors, plus an Arrow-style compatibility-range promise. Readers may migrate in memory.
 
-**Author commits to.** Full semver semantics; an Arrow-style explicit compatibility promise (e.g., "readers of v1.2 can safely process v1.0 and v1.1 data"); and, for each release, an in-spec migration rule from prior minors so readers can normalize old data in memory before processing.
+**Author commits to.** Full semver semantics; an Arrow-style explicit compatibility promise (e.g., "readers of v1.2 can safely process v1.0 and v1.1 data"); and, for each release, a migration rule from prior minors so readers can normalize old data in memory before processing. The migration rule may live in the convention's spec text (as algorithmic guidance) or in a designated reference library that other implementations depend on or copy from. STAC ships changelog entries in the spec and the actual migration code in [pystac](https://github.com/stac-utils/pystac); other implementations rely on pystac directly or follow its lead.
 
 **Reader does.** Parse the semver. Range-check the version against the convention's declared compatibility promise. If the data is in-range, process directly. If out-of-range but a migrator is documented, apply the migrator in memory and then process. If out-of-range and no migrator exists, fail.
 
