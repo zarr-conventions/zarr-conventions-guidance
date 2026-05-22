@@ -13,7 +13,7 @@ This document does not add requirements beyond those in the [normative Zarr Conv
 
 The normative spec tells convention *authors* how to version their conventions but says nothing about what *implementations* should do when they encounter one. As long as that gap is unspecified, every library invents its own rule, and the [survey](/posts/2026-survey) of six conventions shows enough silent-misinterpretation risk in real spec histories that the gap is worth closing with concrete guidance.
 
-This page names contracts that have proven to work in practice across the JSON-metadata ecosystem. It is opinionated guidance, not RFC2119 requirements. The community can pick items off this menu, ignore them, or push to promote them into the normative spec once consensus forms.
+This page names contracts that have proven to work in practice across the JSON-metadata ecosystem. It is opinionated guidance, not RFC2119 requirements. Developers of specific Zarr conventions can pick items off this menu, ignore them, or push to promote them into the normative spec once consensus forms.
 
 ## Vocabulary
 

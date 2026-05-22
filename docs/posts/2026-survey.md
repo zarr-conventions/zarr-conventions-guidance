@@ -155,4 +155,4 @@ The catalog was built to weigh four positions surfaced in [zarr-conventions-spec
 
 ## How to cite
 
-This page is the citable source for the numbers and findings used elsewhere in the guidance site. If you want to refer to it externally, use the date stamp at the top and link to this page directly. Per-spec catalogs and per-row notes are not reproduced here; they live in the working folder that produced this summary and may be opened as a follow-up artifact if the community wants them.
+This page is the citable source for the numbers and findings used elsewhere in the guidance site. If you want to refer to it externally, use the date stamp at the top and link to this page directly. Per-spec catalogs and per-row notes are not reproduced here; they live in the working folder that produced this summary and may be opened as a follow-up artifact if convention developers or implementers ask for them.
